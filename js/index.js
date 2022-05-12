@@ -1,44 +1,90 @@
 const form = document.querySelector("#form")
-const resposta = []
-
-const options = {
-	method: 'GET',
-	headers: {
-		'X-RapidAPI-Host': 'genius-song-lyrics1.p.rapidapi.com',
-		'X-RapidAPI-Key': '5383dc929emshcc0a03a2f12acf7p194ca7jsn6c89dab21673'
-	}
-}
+const songList = document.getElementById("songs__list")
+const lyricsBox = document.getElementById("lyrics")
+const urlApi = "https://api.lyrics.ovh"
 
 async function search() {
-    const param = (document.getElementById("param").value.trim()).replace(" ", "%20")
+    const param = (document.getElementById("param").value).trim()
 
-    await fetch(`https://genius-song-lyrics1.p.rapidapi.com/search?q=${param}&per_page=10&page=1`, options)
-	.then(response => response.json())
-	.then(response => {
-        const searchResult = response.response.hits
+    await fetch(`${urlApi}/suggest/${param}`)
+        .then(response => response.json())
+        .then(response => {
+            form.classList.remove("form--erro")
 
-        searchResult.forEach(item => resposta.push(item.result));
-    })
-	.catch(err => console.error(err))
-    .finally(() => {
-        showResult()
-    })
+            showResult(response)
+        })
+        .catch(error => {
+            console.log(error)
+
+            form.classList.add("form--erro")
+        })
 }
 
-async function getLyrics(id) {
-    await fetch(`https://genius-song-lyrics1.p.rapidapi.com/songs/${id}/lyrics`, options)
-	.then(response => response.json())
-	.then(response => {
-        document.getElementById("result__lyrics").innerHTML = response.response.lyrics.lyrics.body.html        
-    })
-	.catch(err => console.error(err));
+function showResult(songs) {    
+    songList.innerHTML = songs.data.map(item => `
+        <li>
+            <span>
+                <strong>${item.title}</strong> - ${item.artist.name}
+            </span>
+
+            <button class="button button--show-lyrics" onclick="showLyrics('${item.artist.name}', '${item.title}')">
+                <i class="button__icon button__icon--lyrics fa-solid fa-closed-captioning"></i>
+            </button>
+        </li>`
+    ).join("")
+
+    if (songs.prev || songs.next) {
+        document.getElementById("songs__prev-next").innerHTML = `
+            ${
+                songs.prev
+                ?
+                `<button onclick="previousPage('${songs.prev}')">Anterior</button>`
+                :
+                ''
+            }
+            ${
+                songs.next
+                ?
+                `<button onclick="nextPage('${songs.next}')">Próxima</button>`
+                :
+                ''
+            }
+        `
+
+        return
+    }
+
+    document.getElementById("songs__prev-next").innerHTML = ""
 }
 
-function showResult() {
-    resposta.forEach((item) => {
-        const result = document.getElementById("result__list").innerHTML
-        document.getElementById("result__list").innerHTML = (result + `<li>${item.full_title}<button class="show-lyrics" onclick="getLyrics(${item.id})">Letra</button></li>`)
-    })
+async function nextPage(url) {
+    await fetch(`http://cors-anywhere.herokuapp.com/${url}`)
+        .then(response => response.json())
+        .then(response => console.log(response))
+        .catch(error => console.log(error))
+}
+
+async function showLyrics(artist, song) {
+    await fetch(`${urlApi}/v1/${artist}/${song}`)
+        .then(response => response.json())
+        .then(response => {
+            
+            if (response.error) {
+                lyricsBox.innerHTML = ""
+                lyricsBox.innerHTML = "Nenhuma letra encontrada :("
+                return
+            }
+
+            lyricsBox.innerHTML = ""
+
+            const lyrics = response.lyrics.replace(/(\r\n|\r|\n)/g, "<br />")
+
+            lyricsBox.innerHTML =  `<h2 class="lyrics__title">${song}</h2>
+                                    <h3 class="lyrics__artist">${artist}</h3>
+        
+                                    <p>${lyrics}</p>`
+        })
+        .catch(error => console.log(error))
 }
 
 form.addEventListener("submit", (e) => {

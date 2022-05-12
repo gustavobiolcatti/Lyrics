@@ -1,0 +1,23 @@
+/*  SEARCH */
+
+.button--search:hover .button__icon {
+    transform: scale(.9);
+}
+
+.button__icon {
+    font-size: 1.5em;
+    transition: .1s;
+}
+
+/* LYRICS */
+
+.button__icon--lyrics {
+    color: #041832;
+    font-size: 1.7em;
+    transition: .05s;
+}
+
+.button__icon--lyrics:hover {
+    color: #3468A7;
+    transform: scale(.9);
+}

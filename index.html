@@ -8,22 +8,39 @@
         <title>Lyrics</title>
 
         <link rel="stylesheet" href="./css/style.css">
+        <link rel="stylesheet" href="./css/animation.css">
+        <link rel="stylesheet" href="./css/button.css">
+        <link rel="stylesheet" href="./css/loading.css">
+        <link rel="stylesheet" href="./css/form.css">
+        <link rel="stylesheet" href="./css/songs.css">
+        <link rel="stylesheet" href="./css/lyrics.css">
     </head>
     <body>
-        <div class="container">
+        <main>
             <form id="form">
-                <input type="text" id="param" value="Faded"/>
-                <button type="submit">buscar</button>
+                <input type="text" id="param" class="form__input" value="Faded" placeholder="Faded" />
+                <button type="submit" class="button button--search">
+                    <i class="button__icon fa-solid fa-magnifying-glass"></i>
+                </button>
             </form>
             
-            <div class="result">
-                <ul id="result__list"></ul>
-    
-                <p id="result__lyrics">
+            <div class="container">
+                <section class="songs">
+                    <ul id="songs__list">
+                        Nenhuma pesquisa feita.
+                    </ul>
+                    
+                    <div id="songs__prev-next"></div>
+                </section>
+                
+                <p id="lyrics">
+                    Nenhuma letra para apresentar.
                 </p>
             </div>
-        </div>
 
+        </main>
+
+        <script src="https://kit.fontawesome.com/187a46bbf0.js" crossorigin="anonymous"></script>
         <script src="./js/index.js"></script>
     </body>
 </html>

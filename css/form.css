@@ -1,0 +1,28 @@
+#form {
+    display: flex;
+    width: 45%;
+    padding: .5em 0;
+    margin: 2em 0;
+    background: #FFF;
+    border-radius: 5px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.form--erro {
+    border: 1px solid #F00;
+    box-shadow: inset 0 0 10px #F00;
+}
+
+.form__input {
+    width: 90%;
+    padding: .25em 1em;
+    border: none;
+    background: transparent;
+    font-size: 1.1em;
+}
+
+
+.button--search {
+    width: 10%;
+}
